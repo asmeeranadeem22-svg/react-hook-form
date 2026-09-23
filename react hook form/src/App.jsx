@@ -1,8 +1,14 @@
 
 import { useForm, Controller } from "react-hook-form";
 import "./App.css";
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 function App() {
+   const formSchema = z.object({
+        name : z.string().min(3,"name should atleast 3 letter"),
+       age : z.coerce.number().min(18,"age should be 18+")
+ })
   const {
     register,
     handleSubmit,
@@ -14,6 +20,7 @@ function App() {
     control,
     formState: { errors }
   } = useForm({
+          resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -23,6 +30,8 @@ function App() {
       country: ""
     }
   });
+ 
+
 
   // watch password
   const password = watch("password");
@@ -82,12 +91,7 @@ function App() {
               type="text"
               placeholder="Enter your name"
               {...register("name", {
-                required: "Name is required",
-
-                minLength: {
-                  value: 3,
-                  message: "Name must contain at least 3 characters"
-                }
+                required: "Name is required"
               })}
             />
 
@@ -183,11 +187,7 @@ function App() {
               type="number"
               placeholder="Enter your age"
               {...register("age", {
-                required: "Age is required",
-                min: {
-                  value: 18,
-                  message: "Age must be at least 18"
-                }
+                required: "Age is required"
               })}
             />
 
